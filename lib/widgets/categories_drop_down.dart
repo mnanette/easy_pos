@@ -14,7 +14,7 @@ class CategoriesDropDown extends StatefulWidget {
 }
 
 class _CategoriesDropDownState extends State<CategoriesDropDown> {
-  List<CategoryData>? categories;
+  List<ClientData>? categories;
   @override
   void initState() {
     getCategories();
@@ -29,7 +29,7 @@ class _CategoriesDropDownState extends State<CategoriesDropDown> {
       if (data.isNotEmpty) {
         categories = [];
         for (var item in data) {
-          categories!.add(CategoryData.fromJson(item));
+          categories!.add(ClientData.fromJson(item));
         }
       } else {
         categories = [];

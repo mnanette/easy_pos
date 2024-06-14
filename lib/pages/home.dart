@@ -4,6 +4,7 @@ import 'package:easy_pos_r5/helpers/sql_helper.dart';
 import 'package:easy_pos_r5/models/exchange_rate.dart';
 import 'package:easy_pos_r5/pages/all_sales.dart';
 import 'package:easy_pos_r5/pages/categories.dart';
+import 'package:easy_pos_r5/pages/clients.dart';
 import 'package:easy_pos_r5/pages/products.dart';
 import 'package:easy_pos_r5/pages/sale_op.page.dart';
 import 'package:easy_pos_r5/widgets/grid_view_item.dart';
@@ -114,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(
                           height: 20,
                         ),
-                        headerItem('Exchange Rate', $todayRate),
+                        headerItem('Exchange Rate', 'AAA'),
                         headerItem('Today\'s Sales', '1000 EGP'),
                       ],
                     ),
@@ -154,7 +155,10 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.lightBlue,
                   iconData: Icons.groups,
                   label: 'Clients',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => ClientsPage()));
+                  },
                 ),
                 GridViewItem(
                   color: Colors.green,

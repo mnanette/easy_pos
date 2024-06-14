@@ -6,37 +6,37 @@ import 'package:easy_pos_r5/widgets/app_table.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-class CategoriesPage extends StatefulWidget {
-  const CategoriesPage({super.key});
+class ClientsPage extends StatefulWidget {
+  const ClientsPage({super.key});
 
   @override
-  State<CategoriesPage> createState() => _CategoriesPageState();
+  State<ClientsPage> createState() => _ClientsPageState();
 }
 
-class _CategoriesPageState extends State<CategoriesPage> {
-  List<ClientData>? categories;
+class _ClientsPageState extends State<ClientsPage> {
+  List<ClientData>? clients;
   @override
   void initState() {
-    getCategories();
+    getClients();
     super.initState();
   }
 
-  void getCategories() async {
+  void getClients() async {
     try {
       var sqlHelper = GetIt.I.get<SqlHelper>();
-      var data = await sqlHelper.db!.query('categories');
+      var data = await sqlHelper.db!.query('clients');
 
       if (data.isNotEmpty) {
-        categories = [];
+        clients = [];
         for (var item in data) {
-          categories!.add(ClientData.fromJson(item));
+          clients!.add(ClientData.fromJson(item));
         }
       } else {
-        categories = [];
+        clients = [];
       }
     } catch (e) {
       print('Error In get data $e');
-      categories = [];
+      clients = [];
     }
     setState(() {});
   }
@@ -45,14 +45,14 @@ class _CategoriesPageState extends State<CategoriesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Categories'),
+        title: const Text('Clients'),
         actions: [
           IconButton(
               onPressed: () async {
                 var result = await Navigator.push(context,
                     MaterialPageRoute(builder: (ctx) => ClientsOpsPage()));
                 if (result ?? false) {
-                  getCategories();
+                  getClients();
                 }
               },
               icon: const Icon(Icons.add))
@@ -66,7 +66,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
               onChanged: (value) async {
                 var sqlHelper = GetIt.I.get<SqlHelper>();
                 var result = await sqlHelper.db!.rawQuery("""
-        SELECT * FROM Categories
+        SELECT * FROM Clients
         WHERE name LIKE '%$value%' OR description LIKE '%$value%';
           """);
 
@@ -91,24 +91,25 @@ class _CategoriesPageState extends State<CategoriesPage> {
                     columns: const [
                   DataColumn(label: Text('Id')),
                   DataColumn(label: Text('Name')),
-                  DataColumn(label: Text('Description')),
-                  DataColumn(label: Center(child: Text('Actions'))),
+                  DataColumn(label: Text('Email')),
+                  DataColumn(label: Text('Phone')),
+                  DataColumn(label: Center(child: Text('Address'))),
                 ],
-                    source: CategoriesTableSource(
-                      categoriesEx: categories,
-                      onUpdate: (categoryData) async {
+                    source: ClientsTableSource(
+                      clientsEx: clients,
+                      onUpdate: (clientData) async {
                         var result = await Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (ctx) => ClientsOpsPage(
-                                      clientData: categoryData,
+                                      clientData: clientData,
                                     )));
                         if (result ?? false) {
-                          getCategories();
+                          getClients();
                         }
                       },
-                      onDelete: (categoryData) {
-                        onDeleteRow(categoryData.id!);
+                      onDelete: (clientData) {
+                        onDeleteRow(clientData.id!);
                       },
                     ))),
           ],
@@ -123,9 +124,9 @@ class _CategoriesPageState extends State<CategoriesPage> {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: const Text('Delete Category'),
+              title: const Text('Delete Client'),
               content:
-                  const Text('Are you sure you want to delete this category?'),
+                  const Text('Are you sure you want to delete this client?'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -146,12 +147,12 @@ class _CategoriesPageState extends State<CategoriesPage> {
       if (dialogResult ?? false) {
         var sqlHelper = GetIt.I.get<SqlHelper>();
         var result = await sqlHelper.db!.delete(
-          'categories',
+          'clients',
           where: 'id =?',
           whereArgs: [id],
         );
         if (result > 0) {
-          getCategories();
+          getClients();
         }
       }
     } catch (e) {
@@ -160,33 +161,33 @@ class _CategoriesPageState extends State<CategoriesPage> {
   }
 }
 
-class CategoriesTableSource extends DataTableSource {
-  List<ClientData>? categoriesEx;
+class ClientsTableSource extends DataTableSource {
+  List<ClientData>? clientsEx;
 
   void Function(ClientData) onUpdate;
   void Function(ClientData) onDelete;
-  CategoriesTableSource(
-      {required this.categoriesEx,
+  ClientsTableSource(
+      {required this.clientsEx,
       required this.onUpdate,
       required this.onDelete});
 
   @override
   DataRow? getRow(int index) {
     return DataRow2(cells: [
-      DataCell(Text('${categoriesEx?[index].id}')),
-      DataCell(Text('${categoriesEx?[index].name}')),
-      DataCell(Text('${categoriesEx?[index].description}')),
+      DataCell(Text('${clientsEx?[index].id}')),
+      DataCell(Text('${clientsEx?[index].name}')),
+      DataCell(Text('${clientsEx?[index].description}')),
       DataCell(Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
               onPressed: () {
-                onUpdate(categoriesEx![index]);
+                onUpdate(clientsEx![index]);
               },
               icon: const Icon(Icons.edit)),
           IconButton(
               onPressed: () {
-                onDelete(categoriesEx![index]);
+                onDelete(clientsEx![index]);
               },
               icon: const Icon(
                 Icons.delete,
@@ -201,7 +202,7 @@ class CategoriesTableSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => categoriesEx?.length ?? 0;
+  int get rowCount => clientsEx?.length ?? 0;
 
   @override
   int get selectedRowCount => 0;

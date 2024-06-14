@@ -16,12 +16,12 @@ class ClientsOpsPage extends StatefulWidget {
 class _ClientsOpsPageState extends State<ClientsOpsPage> {
   var formKey = GlobalKey<FormState>();
   TextEditingController? nameController;
-  TextEditingController? descriptionController;
+  TextEditingController? phoneController;
 
   @override
   void initState() {
     nameController = TextEditingController(text: widget.clientData?.name);
-    descriptionController =
+    phoneController =
         TextEditingController(text: widget.clientData?.description);
     super.initState();
   }
@@ -51,14 +51,14 @@ class _ClientsOpsPageState extends State<ClientsOpsPage> {
                   height: 20,
                 ),
                 AppTextFormField(
-                    controller: descriptionController!,
+                    controller: phoneController!,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Description is required';
+                        return 'Phone is required';
                       }
                       return null;
                     },
-                    label: 'Description'),
+                    label: 'Phone'),
                 const SizedBox(
                   height: 20,
                 ),
@@ -80,30 +80,23 @@ class _ClientsOpsPageState extends State<ClientsOpsPage> {
         var sqlHelper = GetIt.I.get<SqlHelper>();
         if (widget.clientData != null) {
           // update logic
-          await sqlHelper.db!.update(
-              'categories',
-              {
-                'name': nameController?.text,
-                'description': descriptionController?.text
-              },
-              where: 'id =?',
-              whereArgs: [widget.clientData?.id]);
+          await sqlHelper.db!.update('clients',
+              {'name': nameController?.text, 'phone': phoneController?.text},
+              where: 'id =?', whereArgs: [widget.clientData?.id]);
         } else {
-          await sqlHelper.db!.insert('categories', {
-            'name': nameController?.text,
-            'description': descriptionController?.text
-          });
+          await sqlHelper.db!.insert('clients',
+              {'name': nameController?.text, 'phone': phoneController?.text});
         }
 
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.green,
-            content: Text('Category Saved Successfully')));
+            content: Text('Client Saved Successfully')));
         Navigator.pop(context, true);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: Colors.red,
-          content: Text('Error In Create Category : $e')));
+          content: Text('Error On Create Client : $e')));
     }
   }
 }
