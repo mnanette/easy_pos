@@ -50,10 +50,6 @@ class _HomePageState extends State<HomePage> {
     return exchangeRate.toString();
   }
 
-  todayRate() {
-    var s = todayRate() = exchangeRate!.first as String;
-  }
-
   @override
   void initState() {
     intilizeTables();
@@ -118,7 +114,7 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(
                           height: 20,
                         ),
-                        headerItem('Exchange Rate', todayRate()),
+                        headerItem('Exchange Rate', $todayRate),
                         headerItem('Today\'s Sales', '1000 EGP'),
                       ],
                     ),
