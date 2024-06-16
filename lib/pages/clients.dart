@@ -1,10 +1,10 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:easy_pos_r5/helpers/sql_helper.dart';
-import 'package:easy_pos_r5/models/category.dart';
-import 'package:easy_pos_r5/pages/category_ops.dart';
 import 'package:easy_pos_r5/widgets/app_table.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:easy_pos_r5/pages/client_ops.dart';
+import 'package:easy_pos_r5/models/client.dart';
 
 class ClientsPage extends StatefulWidget {
   const ClientsPage({super.key});
@@ -67,7 +67,7 @@ class _ClientsPageState extends State<ClientsPage> {
                 var sqlHelper = GetIt.I.get<SqlHelper>();
                 var result = await sqlHelper.db!.rawQuery("""
         SELECT * FROM Clients
-        WHERE name LIKE '%$value%' OR description LIKE '%$value%';
+        WHERE name LIKE '%$value%' OR phone LIKE '%$value%';
           """);
 
                 print('values:${result}');
@@ -93,7 +93,8 @@ class _ClientsPageState extends State<ClientsPage> {
                   DataColumn(label: Text('Name')),
                   DataColumn(label: Text('Email')),
                   DataColumn(label: Text('Phone')),
-                  DataColumn(label: Center(child: Text('Address'))),
+                  DataColumn(label: Text('Address')),
+                  DataColumn(label: Center(child: Text('Actions'))),
                 ],
                     source: ClientsTableSource(
                       clientsEx: clients,
@@ -176,7 +177,9 @@ class ClientsTableSource extends DataTableSource {
     return DataRow2(cells: [
       DataCell(Text('${clientsEx?[index].id}')),
       DataCell(Text('${clientsEx?[index].name}')),
-      DataCell(Text('${clientsEx?[index].description}')),
+      DataCell(Text('${clientsEx?[index].phone}')),
+      DataCell(Text('${clientsEx?[index].email}')),
+      DataCell(Text('${clientsEx?[index].address}')),
       DataCell(Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

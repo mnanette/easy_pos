@@ -22,7 +22,7 @@ class _ProductOpsPageState extends State<ProductOpsPage> {
   TextEditingController? priceController;
   TextEditingController? stockController;
   TextEditingController? imageController;
-  bool isAvaliable = false;
+  bool isAvailable = false;
   int? selectedCategoryId;
 
   @override
@@ -44,7 +44,7 @@ class _ProductOpsPageState extends State<ProductOpsPage> {
     stockController =
         TextEditingController(text: '${widget.product?.stock ?? ''}');
 
-    isAvaliable = widget.product?.isAvaliable ?? false;
+    isAvailable = widget.product?.isAvailable ?? false;
     selectedCategoryId = widget.product?.categoryId;
     setState(() {});
   }
@@ -141,10 +141,10 @@ class _ProductOpsPageState extends State<ProductOpsPage> {
                   Row(
                     children: [
                       Switch(
-                          value: isAvaliable,
+                          value: isAvailable,
                           onChanged: (value) {
                             setState(() {
-                              isAvaliable = value;
+                              isAvailable = value;
                             });
                           }),
                       const SizedBox(
@@ -194,7 +194,7 @@ class _ProductOpsPageState extends State<ProductOpsPage> {
                 'price': priceController?.text,
                 'stock': stockController?.text,
                 'image': imageController?.text,
-                'isAvaliable': isAvaliable,
+                'isAvailable': isAvailable ? 1 : 0,
                 'categoryId': selectedCategoryId,
               },
               where: 'id =?',
@@ -206,7 +206,7 @@ class _ProductOpsPageState extends State<ProductOpsPage> {
             'price': priceController?.text,
             'stock': stockController?.text,
             'image': imageController?.text,
-            'isAvaliable': isAvaliable,
+            'isAvailable': isAvailable ? 1 : 0,
             'categoryId': selectedCategoryId,
           });
         }

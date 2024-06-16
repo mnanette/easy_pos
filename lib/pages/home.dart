@@ -30,7 +30,7 @@ void getERate() async {
     print('Error In get data $e');
     exchangeRate = [];
   }
-  var todayRate = exchangeRate!.first as String;
+  // var todayRate = exchangeRate!.first as String;
 
   //String todayRateString = todayRate.toString();
   // setState(() {});

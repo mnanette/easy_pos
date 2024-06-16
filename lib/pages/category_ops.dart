@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class ClientsOpsPage extends StatefulWidget {
-  final ClientData? clientData;
+  final CategoryData? clientData;
   const ClientsOpsPage({this.clientData, super.key});
 
   @override
@@ -22,7 +22,7 @@ class _ClientsOpsPageState extends State<ClientsOpsPage> {
   void initState() {
     nameController = TextEditingController(text: widget.clientData?.name);
     descriptionController =
-        TextEditingController(text: widget.clientData?.description);
+        TextEditingController(text: widget.clientData?.phone);
     super.initState();
   }
 

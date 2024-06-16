@@ -14,7 +14,7 @@ class CategoriesPage extends StatefulWidget {
 }
 
 class _CategoriesPageState extends State<CategoriesPage> {
-  List<ClientData>? categories;
+  List<CategoryData>? categories;
   @override
   void initState() {
     getCategories();
@@ -29,7 +29,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
       if (data.isNotEmpty) {
         categories = [];
         for (var item in data) {
-          categories!.add(ClientData.fromJson(item));
+          categories!.add(CategoryData.fromJson(item));
         }
       } else {
         categories = [];
@@ -161,10 +161,10 @@ class _CategoriesPageState extends State<CategoriesPage> {
 }
 
 class CategoriesTableSource extends DataTableSource {
-  List<ClientData>? categoriesEx;
+  List<CategoryData>? categoriesEx;
 
-  void Function(ClientData) onUpdate;
-  void Function(ClientData) onDelete;
+  void Function(CategoryData) onUpdate;
+  void Function(CategoryData) onDelete;
   CategoriesTableSource(
       {required this.categoriesEx,
       required this.onUpdate,
@@ -175,7 +175,7 @@ class CategoriesTableSource extends DataTableSource {
     return DataRow2(cells: [
       DataCell(Text('${categoriesEx?[index].id}')),
       DataCell(Text('${categoriesEx?[index].name}')),
-      DataCell(Text('${categoriesEx?[index].description}')),
+      DataCell(Text('${categoriesEx?[index].phone}')),
       DataCell(Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

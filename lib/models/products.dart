@@ -4,7 +4,7 @@ class Product {
   String? description;
   double? price;
   int? stock;
-  bool? isAvaliable;
+  bool? isAvailable;
   String? image;
   int? categoryId;
   String? categoryName;
@@ -16,7 +16,7 @@ class Product {
     description = data["description"];
     price = data["price"];
     stock = data["stock"];
-    isAvaliable = data["isAvaliable"] == 1 ? true : false;
+    isAvailable = data["isAvaliable"] == 1 ? true : false;
     image = data["image"];
     categoryId = data["categoryId"];
     categoryName = data["categoryName"];
@@ -30,7 +30,7 @@ class Product {
       "description": description,
       "price": price,
       "stock": stock,
-      "isAvaliable": isAvaliable,
+      "isAvaliable": isAvailable,
       "image": image,
       "categoryId": categoryId,
     };

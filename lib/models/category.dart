@@ -1,15 +1,15 @@
-class ClientData {
+class CategoryData {
   int? id;
   String? name;
-  String? description;
+  String? phone;
 
-  ClientData.fromJson(Map<String, dynamic> data) {
+  CategoryData.fromJson(Map<String, dynamic> data) {
     id = data["id"];
     name = data["name"];
-    description = data["description"];
+    phone = data["description"];
   }
 
   Map<String, dynamic> toJson() {
-    return {"id": id, "name": name, "description": description};
+    return {"id": id, "name": name, "description": phone};
   }
 }

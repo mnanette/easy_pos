@@ -98,7 +98,7 @@ class _ProductsPageState extends State<ProductsPage> {
                       DataColumn(label: Text('Description')),
                       DataColumn(label: Text('Price')),
                       DataColumn(label: Text('Stock')),
-                      DataColumn(label: Text('isAvaliable')),
+                      DataColumn(label: Text('isAvailable')),
                       DataColumn(label: Center(child: Text('image'))),
                       DataColumn(label: Text('categoryId')),
                       DataColumn(label: Text('categoryName')),
@@ -189,7 +189,7 @@ class ProductsSource extends DataTableSource {
       DataCell(Text('${productsEx?[index].description}')),
       DataCell(Text('${productsEx?[index].price}')),
       DataCell(Text('${productsEx?[index].stock}')),
-      DataCell(Text('${productsEx?[index].isAvaliable}')),
+      DataCell(Text('${productsEx?[index].isAvailable}')),
       DataCell(Center(
         child: Image.network(
           '${productsEx?[index].image}',
