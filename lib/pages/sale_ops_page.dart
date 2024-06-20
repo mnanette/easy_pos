@@ -3,8 +3,10 @@ import 'package:easy_pos_r5/models/order.dart';
 import 'package:easy_pos_r5/models/order_item.dart';
 import 'package:easy_pos_r5/models/products.dart';
 import 'package:easy_pos_r5/widgets/app_elevated_button.dart';
+import 'package:easy_pos_r5/widgets/clients_drop_down.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+//import 'package:easy_pos_r5/pages/clients.dart';
 
 class SaleOpsPage extends StatefulWidget {
   final Order? order;
@@ -86,8 +88,17 @@ class _SaleOpsPageState extends State<SaleOpsPage> {
                         height: 20,
                       ),
                       Container(
-                          color: Colors.red,
-                          child: Text('TODO: add client drop down here')),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text('Selected client: _selectedClient ?? '),
+                            ClientDropdown(),
+                          ],
+                        ),
+
+                        color: Colors.red,
+                        //child: Text('TODO: add client drop down here')
+                      ),
                       const SizedBox(
                         height: 20,
                       ),

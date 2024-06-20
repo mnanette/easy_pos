@@ -6,7 +6,7 @@ import 'package:easy_pos_r5/pages/all_sales.dart';
 import 'package:easy_pos_r5/pages/categories.dart';
 import 'package:easy_pos_r5/pages/clients.dart';
 import 'package:easy_pos_r5/pages/products.dart';
-import 'package:easy_pos_r5/pages/sale_op.page.dart';
+import 'package:easy_pos_r5/pages/sale_ops_page.dart';
 import 'package:easy_pos_r5/widgets/grid_view_item.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
