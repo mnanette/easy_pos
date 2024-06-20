@@ -30,9 +30,9 @@ void getERate() async {
     print('Error In get data $e');
     exchangeRate = [];
   }
-  // var todayRate = exchangeRate!.first as String;
+  var todayRate = exchangeRate!.first.eRate;
 
-  //String todayRateString = todayRate.toString();
+  String todayRateString = todayRate.toString();
   // setState(() {});
 }
 
@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(
                           height: 20,
                         ),
-                        headerItem('Exchange Rate', 'AAA'),
+                        headerItem('Exchange Rate', todayRateString),
                         headerItem('Today\'s Sales', '1000 EGP'),
                       ],
                     ),

@@ -10,6 +10,17 @@ class _OrderScreenState extends State<OrderScreen> {
   late List<ClientData> clients;
   ClientData? selectedClient;
 
+  Future<List<ClientData>> fetchClients() async {
+    // Replace this with your actual API call or database query
+    // For demonstration purposes, let's assume you have a list of ClientData objects
+    List<ClientData> clients = [
+      // ClientData('John ', '012345678', 'john@example.com', 'Daher'),
+      // ClientData('Jane ', '0111111189', 'jane@example.com', 'Cairo'),
+      // Add more clients here...
+    ];
+    return clients;
+  }
+
   @override
   void initState() {
     super.initState();
