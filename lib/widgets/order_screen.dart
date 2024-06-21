@@ -53,9 +53,10 @@ class _OrderScreenState extends State<OrderScreen> {
                 });
               },
               items: clients.map((ClientData client) {
+                // ClientData myInstance = new ClientData();
                 return DropdownMenuItem<ClientData>(
                   value: client,
-                  child: Text(ClientData.name),
+                  child: Text(selectedClient!.name),
                 );
               }).toList(),
             ),

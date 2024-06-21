@@ -13,7 +13,7 @@ class ClientData {
     address = data["address"];
 
     @override
-    String toString() => '$name'; // Return the name as a string
+    String? toString() => name; // Return the name as a string
   }
 
   Map<String, dynamic> toJson() {
