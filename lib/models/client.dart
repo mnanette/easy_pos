@@ -12,8 +12,8 @@ class ClientData {
     email = data["email"];
     address = data["address"];
 
-    @override
-    String? toString() => name; // Return the name as a string
+    //@override
+    //String? toString() => name; // Return the name as a string
   }
 
   Map<String, dynamic> toJson() {

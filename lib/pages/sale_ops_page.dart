@@ -61,6 +61,7 @@ class _SaleOpsPageState extends State<SaleOpsPage> {
 
   @override
   Widget build(BuildContext context) {
+    var selectedClientId;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.order == null ? 'Add New Sale' : 'Update Sale'),
@@ -87,18 +88,19 @@ class _SaleOpsPageState extends State<SaleOpsPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text('Selected client: _selectedClient ?? '),
-                            ClientDropdown(),
-                          ],
-                        ),
 
-                        color: Colors.red,
-                        //child: Text('TODO: add client drop down here')
+                      ClientsDropDown(
+                        selectedValue: selectedClientId,
+                        onChanged: (clientId) {
+                          setState(() {
+                            selectedClientId = clientId;
+                          });
+                        },
                       ),
+
+                      //color: Colors.red,
+                      //child: Text('TODO: add client drop down here')
+
                       const SizedBox(
                         height: 20,
                       ),

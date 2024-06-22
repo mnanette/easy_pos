@@ -1,35 +1,80 @@
+import 'package:easy_pos_r5/helpers/sql_helper.dart';
+import 'package:easy_pos_r5/models/client.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
-class ClientDropdown extends StatefulWidget {
+class ClientsDropDown extends StatefulWidget {
+  final int? selectedValue;
+  final void Function(int?)? onChanged;
+  const ClientsDropDown(
+      {super.key, this.selectedValue, required this.onChanged});
+
   @override
-  _ClientDropdownState createState() => _ClientDropdownState();
+  State<ClientsDropDown> createState() => _ClientsDropDownState();
 }
 
-class _ClientDropdownState extends State<ClientDropdown> {
-  late String _selectedClient;
+class _ClientsDropDownState extends State<ClientsDropDown> {
+  List<ClientData>? clients;
+  @override
+  void initState() {
+    getClients();
+    super.initState();
+  }
 
-  List<String> _clients = [
-    'Client 1',
-    'Client 2',
-    'Client 3',
-    // Add more clients here
-  ];
+  void getClients() async {
+    try {
+      var sqlHelper = GetIt.I.get<SqlHelper>();
+      var data = await sqlHelper.db!.query('clients');
+
+      if (data.isNotEmpty) {
+        clients = [];
+        for (var item in data) {
+          clients!.add(ClientData.fromJson(item));
+        }
+      } else {
+        clients = [];
+      }
+    } catch (e) {
+      print('Error In get data $e');
+      clients = [];
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton(
-      value: _selectedClient,
-      onChanged: (value) {
-        setState(() {
-          _selectedClient = value!;
-        });
-      },
-      items: _clients.map((client) {
-        return DropdownMenuItem(
-          child: Text(client),
-          value: client,
-        );
-      }).toList(),
-    );
+    return clients == null
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : (clients?.isEmpty ?? false)
+            ? const Center(
+                child: Text('No Data Found'),
+              )
+            : Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(color: Colors.black)),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  child: DropdownButton(
+                      underline: const SizedBox(),
+                      isExpanded: true,
+                      hint: const Text(
+                        'Select Category',
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      value: widget.selectedValue,
+                      items: [
+                        for (var client in clients!)
+                          DropdownMenuItem(
+                            value: client.id,
+                            child: Text(client.name ?? 'No Name'),
+                          ),
+                      ],
+                      onChanged: widget.onChanged),
+                ),
+              );
   }
 }
