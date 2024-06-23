@@ -89,15 +89,24 @@ class SqlHelper {
           """);
       batch.execute("""
          Create table if not exists exchangeRate(
-           id integer primary key,
-           currencyPair text not null,
-           eRate real
+         id integer primary key,
+       name text not null,
+      eRate real
 
-           )
-            """);
+      )
+      """);
+
+      // batch.execute("""
+      // Create table if not exists exchangeRate(
+      //   id integer primary key,
+      //currencyPair text not null,
+      //  eRate text
+      //    )
+      //      """);
+
       batch.execute("""
-          insert into exchangeRate(currencyPair,eRate) values ('USD/EGP',47)
-          """);
+          insert into exchangeRate(currencyPair,eRate) values ('USD/EGP',47);
+         """);
       var result = await batch.commit();
       print('resuts $result');
       return true;

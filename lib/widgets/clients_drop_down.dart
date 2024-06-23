@@ -62,7 +62,7 @@ class _ClientsDropDownState extends State<ClientsDropDown> {
                       underline: const SizedBox(),
                       isExpanded: true,
                       hint: const Text(
-                        'Select Category',
+                        'Select Client',
                         style: TextStyle(fontWeight: FontWeight.w500),
                       ),
                       value: widget.selectedValue,

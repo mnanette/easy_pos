@@ -1,3 +1,5 @@
+//import 'dart:ffi';
+
 import 'package:easy_pos_r5/helpers/sql_helper.dart';
 import 'package:easy_pos_r5/models/exchange_rate.dart';
 import 'package:easy_pos_r5/pages/all_sales.dart';
@@ -10,7 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-String todayRate = '45';
+String todayRateString = '10';
 
 List<ExchangeRateData>? exchangeRate;
 void getERate() async {
@@ -22,8 +24,6 @@ void getERate() async {
       exchangeRate = [];
       for (var item in data) {
         exchangeRate!.add(ExchangeRateData.fromJson(item));
-        todayRate = exchangeRate!.first.eRate as String;
-        //  todayRateString = todayRate.toString();
       }
     } else {
       exchangeRate = [];
@@ -32,7 +32,9 @@ void getERate() async {
     print('Error In get data $e');
     exchangeRate = [];
   }
+  var todayRate = exchangeRate!.first.eRate;
 
+  todayRateString = todayRate.toString();
   //setState(() {});
 }
 
@@ -48,7 +50,7 @@ class _HomePageState extends State<HomePage> {
   bool isTableIntilized = false;
 
   //String get todayRateString {
-  // return exchangeRate?.eRate as String;
+  //return exchangeRate.toString();
   //}
 
   @override
@@ -117,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                         const SizedBox(
                           height: 20,
                         ),
-                        headerItem('Exchange Rate', todayRate),
+                        headerItem('Exchange Rate', todayRateString),
                         headerItem('Today\'s Sales', '1000 EGP'),
                       ],
                     ),
