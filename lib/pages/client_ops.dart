@@ -17,15 +17,13 @@ class _ClientsOpsPageState extends State<ClientsOpsPage> {
   var formKey = GlobalKey<FormState>();
   TextEditingController? nameController;
   TextEditingController? phoneController;
-  TextEditingController? emailController;
-  TextEditingController? addressController;
+
 
   @override
   void initState() {
     nameController = TextEditingController(text: widget.clientData?.name);
     phoneController = TextEditingController(text: widget.clientData?.phone);
-    emailController = TextEditingController(text: widget.clientData?.email);
-    addressController = TextEditingController(text: widget.clientData?.address);
+
     super.initState();
   }
 
@@ -62,30 +60,7 @@ class _ClientsOpsPageState extends State<ClientsOpsPage> {
                       return null;
                     },
                     label: 'Phone'),
-                const SizedBox(
-                  height: 20,
-                ),
-                AppTextFormField(
-                    controller: emailController!,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Email is required';
-                      }
-                      return null;
-                    },
-                    label: 'Email'),
-                const SizedBox(
-                  height: 20,
-                ),
-                AppTextFormField(
-                    controller: addressController!,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Address is required';
-                      }
-                      return null;
-                    },
-                    label: 'Address'),
+             
                 const SizedBox(
                   height: 20,
                 ),

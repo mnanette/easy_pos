@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'package:flutter/foundation.dart';
+//import 'package:path/path.dart' as path;
 
 class SqlHelper {
   Database? db;
@@ -114,5 +117,17 @@ class SqlHelper {
       print('Error in creating table: $e');
       return false;
     }
+  }
+
+  Future<void> backupDatabase() async {
+    final String databasePath = await getDatabasesPath();
+    final String dbName = 'pos.db';
+    final String backupPath = '$databasePath/$dbName.bak';
+
+    File originalFile = File('$databasePath/$dbName');
+    File backupFile = File(backupPath);
+
+    await originalFile.copy(backupFile.path);
+    print('Database backed up successfully!');
   }
 }

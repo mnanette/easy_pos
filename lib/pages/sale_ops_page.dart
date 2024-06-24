@@ -6,7 +6,10 @@ import 'package:easy_pos_r5/widgets/app_elevated_button.dart';
 import 'package:easy_pos_r5/widgets/clients_drop_down.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import '../widgets/app_text_form_field.dart';
 //import 'package:easy_pos_r5/pages/clients.dart';
+
+var discountController = TextEditingController();
 
 class SaleOpsPage extends StatefulWidget {
   final Order? order;
@@ -149,8 +152,19 @@ class _SaleOpsPageState extends State<SaleOpsPage> {
                           ),
                         ),
                       Container(
-                        color: Colors.red,
-                        child: Text('TODO: add discount textfield'),
+                        child: AppTextFormField(
+                            controller: discountController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Specify discount percentage';
+                              }
+                              return null;
+                            },
+                            label: 'Discount'),
+
+                        //color: Colors.red,
+                        // child: Text('TODO: add discount textfield'),
+                        //child: Text('${(order.product.discount ?? 1})'),
                       ),
                       Text(
                         'Total Price : $calculateTotalPrice',
@@ -184,7 +198,7 @@ class _SaleOpsPageState extends State<SaleOpsPage> {
       var orderId = await sqlHelper.db!.insert('orders', {
         'label': orderLabel,
         'totalPrice': calculateTotalPrice,
-        'discount': 0,
+        'discount': discountController,
         'clientId': 1
       });
 

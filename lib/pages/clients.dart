@@ -92,8 +92,7 @@ class _ClientsPageState extends State<ClientsPage> {
                   DataColumn(label: Text('Id')),
                   DataColumn(label: Text('Name')),
                   DataColumn(label: Text('Email')),
-                  DataColumn(label: Text('Phone')),
-                  DataColumn(label: Text('Address')),
+                  
                   DataColumn(label: Center(child: Text('Actions'))),
                 ],
                     source: ClientsTableSource(
@@ -178,8 +177,7 @@ class ClientsTableSource extends DataTableSource {
       DataCell(Text('${clientsEx?[index].id}')),
       DataCell(Text('${clientsEx?[index].name}')),
       DataCell(Text('${clientsEx?[index].phone}')),
-      DataCell(Text('${clientsEx?[index].email}')),
-      DataCell(Text('${clientsEx?[index].address}')),
+      
       DataCell(Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

@@ -12,7 +12,8 @@ void main() async {
   if (sqlHelper.db != null) {
     GetIt.I.registerSingleton(sqlHelper);
   }
-
+  //await sqlHelper.createTables();
+  //await sqlHelper.backupDatabase(); // Create a backup of the database
   runApp(const MyApp());
 }
 
