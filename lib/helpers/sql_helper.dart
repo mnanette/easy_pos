@@ -90,7 +90,7 @@ class SqlHelper {
       batch.execute("""
          Create table if not exists exchangeRate(
          id integer primary key,
-       name text not null,
+       currencyPair text not null,
       eRate real
 
       )
