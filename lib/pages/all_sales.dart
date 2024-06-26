@@ -24,7 +24,7 @@ class _AllSalesState extends State<AllSales> {
     try {
       var sqlHelper = GetIt.I.get<SqlHelper>();
       var data = await sqlHelper.db!.rawQuery("""
-      select O.* ,C.name as clientName,C.phone as clientPhone,C.address as clientAddress 
+      select O.* ,C.name as clientName,C.phone as clientPhone 
       from orders O
       inner join clients C
       where O.clientId = C.id
@@ -87,7 +87,6 @@ class _AllSalesState extends State<AllSales> {
                       DataColumn(label: Text('Discount')),
                       DataColumn(label: Text('Client Name')),
                       DataColumn(label: Text('Client phone')),
-                      DataColumn(label: Text('Client Address')),
                       DataColumn(label: Center(child: Text('Actions'))),
                     ],
                     source: OrderDataSource(
@@ -119,7 +118,6 @@ class OrderDataSource extends DataTableSource {
       DataCell(Text('${ordersEx?[index].discount}')),
       DataCell(Text('${ordersEx?[index].clientName}')),
       DataCell(Text('${ordersEx?[index].clientPhone}')),
-      DataCell(Text('${ordersEx?[index].clientAddress}')),
       DataCell(Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
