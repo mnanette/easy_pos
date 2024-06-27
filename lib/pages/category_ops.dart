@@ -5,24 +5,24 @@ import 'package:easy_pos_r5/widgets/app_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-class ClientsOpsPage extends StatefulWidget {
-  final CategoryData? clientData;
-  const ClientsOpsPage({this.clientData, super.key});
+class CategoriesOpsPage extends StatefulWidget {
+  final CategoryData? categoryData;
+  const CategoriesOpsPage({this.categoryData, super.key});
 
   @override
-  State<ClientsOpsPage> createState() => _ClientsOpsPageState();
+  State<CategoriesOpsPage> createState() => _CategoriesOpsPageState();
 }
 
-class _ClientsOpsPageState extends State<ClientsOpsPage> {
+class _CategoriesOpsPageState extends State<CategoriesOpsPage> {
   var formKey = GlobalKey<FormState>();
   TextEditingController? nameController;
   TextEditingController? descriptionController;
 
   @override
   void initState() {
-    nameController = TextEditingController(text: widget.clientData?.name);
+    nameController = TextEditingController(text: widget.categoryData?.name);
     descriptionController =
-        TextEditingController(text: widget.clientData?.phone);
+        TextEditingController(text: widget.categoryData?.description);
     super.initState();
   }
 
@@ -30,7 +30,7 @@ class _ClientsOpsPageState extends State<ClientsOpsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.clientData != null ? 'Update' : 'Add New'),
+        title: Text(widget.categoryData != null ? 'Update' : 'Add New'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -78,7 +78,7 @@ class _ClientsOpsPageState extends State<ClientsOpsPage> {
     try {
       if (formKey.currentState!.validate()) {
         var sqlHelper = GetIt.I.get<SqlHelper>();
-        if (widget.clientData != null) {
+        if (widget.categoryData != null) {
           // update logic
           await sqlHelper.db!.update(
               'categories',
@@ -87,7 +87,7 @@ class _ClientsOpsPageState extends State<ClientsOpsPage> {
                 'description': descriptionController?.text
               },
               where: 'id =?',
-              whereArgs: [widget.clientData?.id]);
+              whereArgs: [widget.categoryData?.id]);
         } else {
           await sqlHelper.db!.insert('categories', {
             'name': nameController?.text,
