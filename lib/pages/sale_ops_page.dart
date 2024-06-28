@@ -7,7 +7,6 @@ import 'package:easy_pos_r5/widgets/clients_drop_down.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import '../widgets/app_text_form_field.dart';
-//import 'package:easy_pos_r5/pages/clients.dart';
 
 var discountController = TextEditingController();
 
@@ -23,11 +22,12 @@ class _SaleOpsPageState extends State<SaleOpsPage> {
   String? orderLabel;
   List<Product>? products;
   List<OrderItem> selectedOrderItem = [];
+  int? selectedClientId;
 
   @override
   void initState() {
-    initPage();
     super.initState();
+    initPage();
   }
 
   void initPage() {
@@ -41,22 +41,19 @@ class _SaleOpsPageState extends State<SaleOpsPage> {
     try {
       var sqlHelper = GetIt.I.get<SqlHelper>();
       var data = await sqlHelper.db!.rawQuery("""
-      select P.* ,C.name as categoryName,C.description as categoryDesc 
+      select P.*, C.name as categoryName, C.description as categoryDesc 
       from products P
       inner join categories C
-      where P.categoryId = C.id
+      on P.categoryId = C.id
       """);
 
       if (data.isNotEmpty) {
-        products = [];
-        for (var item in data) {
-          products!.add(Product.fromJson(item));
-        }
+        products = data.map((item) => Product.fromJson(item)).toList();
       } else {
         products = [];
       }
     } catch (e) {
-      print('Error In get data $e');
+      print('Error in getProducts: $e');
       products = [];
     }
     setState(() {});
@@ -64,7 +61,6 @@ class _SaleOpsPageState extends State<SaleOpsPage> {
 
   @override
   Widget build(BuildContext context) {
-    var selectedClientId;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.order == null ? 'Add New Sale' : 'Update Sale'),
@@ -75,117 +71,104 @@ class _SaleOpsPageState extends State<SaleOpsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Label : $orderLabel',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-
-                      ClientsDropDown(
-                        selectedValue: selectedClientId,
-                        onChanged: (clientId) {
-                          setState(() {
-                            selectedClientId = clientId;
-                          });
-                        },
-                      ),
-
-                      //color: Colors.red,
-                      //child: Text('TODO: add client drop down here')
-
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                onAddProductClicked();
-                              },
-                              icon: Icon(Icons.add)),
-                          Text(
-                            'Add Products',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16,
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Order Items',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                        ),
-                      ),
-                      for (var orderItem in selectedOrderItem)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: ListTile(
-                            leading:
-                                Image.network(orderItem.product?.image ?? ''),
-                            title: Text(
-                                '${orderItem.product?.name ?? ''},${orderItem.productCount}X'),
-                            trailing: Text(
-                                '${(orderItem.productCount ?? 0) * (orderItem.product?.price ?? 0)}'),
-                          ),
-                        ),
-                      Container(
-                        child: AppTextFormField(
-                            controller: discountController,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Specify discount percentage';
-                              }
-                              return null;
-                            },
-                            label: 'Discount'),
-
-                        //color: Colors.red,
-                        // child: Text('TODO: add discount textfield'),
-                        //child: Text('${(order.product.discount ?? 1})'),
-                      ),
-                      Text(
-                        'Total Price : $calculateTotalPrice',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+              _buildOrderDetailsCard(),
+              _buildOrderItemsCard(),
               AppElevatedButton(
-                  onPressed: selectedOrderItem.isEmpty
-                      ? null
-                      : () async {
-                          await onSetOrder();
-                        },
-                  label: 'Add Order')
+                onPressed: selectedOrderItem.isEmpty ? null : onSetOrder,
+                label: widget.order == null ? 'Add Order' : 'Update Order',
+              ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOrderDetailsCard() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Label: $orderLabel',
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ClientsDropDown(
+              selectedValue: selectedClientId,
+              onChanged: (clientId) {
+                setState(() {
+                  selectedClientId = clientId;
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                IconButton(
+                  onPressed: onAddProductClicked,
+                  icon: Icon(Icons.add),
+                ),
+                Text(
+                  'Add Products',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOrderItemsCard() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Text(
+              'Order Items',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+            ),
+            for (var orderItem in selectedOrderItem)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: ListTile(
+                  leading: Image.network(orderItem.product?.image ?? ''),
+                  title: Text('${orderItem.product?.name ?? ''}, ${orderItem.productCount}x'),
+                  trailing: Text('${orderItem.productCount! * orderItem.product!.price!}'),
+                ),
+              ),
+            AppTextFormField(
+              controller: discountController,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Specify discount percentage';
+                }
+                return null;
+              },
+              label: 'Discount',
+            ),
+            Text(
+              'Total Price: ${calculateTotalPrice()}',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -197,9 +180,9 @@ class _SaleOpsPageState extends State<SaleOpsPage> {
 
       var orderId = await sqlHelper.db!.insert('orders', {
         'label': orderLabel,
-        'totalPrice': calculateTotalPrice,
-        'discount': discountController,
-        'clientId': 1
+        'totalPrice': calculateTotalPrice(),
+        'discount': double.tryParse(discountController.text) ?? 0.0,
+        'clientId': selectedClientId ?? 1,
       });
 
       var batch = sqlHelper.db!.batch();
@@ -207,158 +190,131 @@ class _SaleOpsPageState extends State<SaleOpsPage> {
         batch.insert('orderProductItems', {
           'orderId': orderId,
           'productId': orderItem.productId,
-          'productCount': orderItem.productCount ?? 0,
+          'productCount': orderItem.productCount,
         });
       }
 
       await batch.commit();
 
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: Colors.green,
-          content: Text('Order Set Successfully')));
+        backgroundColor: Colors.green,
+        content: Text('Order Set Successfully'),
+      ));
       Navigator.pop(context, true);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          backgroundColor: Colors.red,
-          content: Text('Error In Create Order : $e')));
+        backgroundColor: Colors.red,
+        content: Text('Error in Create Order: $e'),
+      ));
     }
   }
 
-  double get calculateTotalPrice {
-    double total = 0;
-
-    for (var orderItem in selectedOrderItem) {
-      total = total +
-          ((orderItem.productCount ?? 0) * (orderItem.product?.price ?? 0));
-    }
-
-    return total;
+  double calculateTotalPrice() {
+    double total = selectedOrderItem.fold(
+      0,
+          (sum, item) => sum + (item.productCount! * item.product!.price!),
+    );
+    double discount = double.tryParse(discountController.text) ?? 0.0;
+    return total - (total * (discount / 100));
   }
 
   void onAddProductClicked() async {
     await showDialog(
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(builder: (context, setStateEx) {
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateEx) {
             return Dialog(
               child: Padding(
                 padding: const EdgeInsets.all(14.0),
-                child: (products?.isEmpty ?? false)
-                    ? Center(
-                        child: Text('No Data Found'),
-                      )
+                child: products == null || products!.isEmpty
+                    ? Center(child: Text('No Data Found'))
                     : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Products',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 16,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Expanded(
-                            child: ListView(
-                              children: [
-                                for (var product in products!)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    child: ListTile(
-                                        leading: Image.network(
-                                            product.image ?? 'No Image'),
-                                        title: Text(product.name ?? 'No Name'),
-                                        subtitle: getOrderItem(product.id!) ==
-                                                null
-                                            ? null
-                                            : Row(
-                                                children: [
-                                                  IconButton(
-                                                      onPressed: getOrderItem(
-                                                                      product
-                                                                          .id!) !=
-                                                                  null &&
-                                                              getOrderItem(product
-                                                                          .id!)
-                                                                      ?.productCount ==
-                                                                  1
-                                                          ? null
-                                                          : () {
-                                                              var orderItem =
-                                                                  getOrderItem(
-                                                                      product
-                                                                          .id!);
-
-                                                              orderItem
-                                                                      ?.productCount =
-                                                                  (orderItem.productCount ??
-                                                                          0) -
-                                                                      1;
-                                                              setStateEx(() {});
-                                                            },
-                                                      icon: Icon(Icons.remove)),
-                                                  Text(
-                                                      getOrderItem(product.id!)!
-                                                          .productCount
-                                                          .toString()),
-                                                  IconButton(
-                                                      onPressed: () {
-                                                        var orderItem =
-                                                            getOrderItem(
-                                                                product.id!);
-
-                                                        if ((orderItem
-                                                                    ?.productCount ??
-                                                                0) <
-                                                            (product.stock ??
-                                                                0)) {
-                                                          orderItem
-                                                                  ?.productCount =
-                                                              (orderItem.productCount ??
-                                                                      0) +
-                                                                  1;
-                                                        }
-
-                                                        setStateEx(() {});
-                                                      },
-                                                      icon: Icon(Icons.add)),
-                                                ],
-                                              ),
-                                        trailing:
-                                            getOrderItem(product.id!) == null
-                                                ? IconButton(
-                                                    onPressed: () {
-                                                      onAddItem(product);
-                                                      setStateEx(() {});
-                                                    },
-                                                    icon: Icon(Icons.add))
-                                                : IconButton(
-                                                    onPressed: () {
-                                                      onDeleteItem(product.id!);
-                                                      setStateEx(() {});
-                                                    },
-                                                    icon: Icon(Icons.delete))),
-                                  )
-                              ],
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          AppElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              label: 'Back')
-                        ],
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Products',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
                       ),
+                    ),
+                    const SizedBox(height: 20),
+                    Expanded(
+                      child: ListView(
+                        children: products!.map((product) {
+                          var orderItem = getOrderItem(product.id!);
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: ListTile(
+                              leading: Image.network(product.image ?? 'No Image'),
+                              title: Text(product.name ?? 'No Name'),
+                              subtitle: orderItem == null
+                                  ? null
+                                  : Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: orderItem.productCount == 1
+                                        ? null
+                                        : () {
+                                      setStateEx(() {
+                                        orderItem.productCount =
+                                            (orderItem.productCount ?? 0) - 1;
+                                      });
+                                    },
+                                    icon: Icon(Icons.remove),
+                                  ),
+                                  Text(orderItem.productCount.toString()),
+                                  IconButton(
+                                    onPressed: () {
+                                      setStateEx(() {
+                                        if (orderItem.productCount! < product.stock!) {
+                                          orderItem.productCount =
+                                              (orderItem.productCount ?? 0) + 1;
+                                        }
+                                      });
+                                    },
+                                    icon: Icon(Icons.add),
+                                  ),
+                                ],
+                              ),
+                              trailing: orderItem == null
+                                  ? IconButton(
+                                onPressed: () {
+                                  setStateEx(() {
+                                    onAddItem(product);
+                                  });
+                                },
+                                icon: Icon(Icons.add),
+                              )
+                                  : IconButton(
+                                onPressed: () {
+                                  setStateEx(() {
+                                    onDeleteItem(product.id!);
+                                  });
+                                },
+                                icon: Icon(Icons.delete),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    AppElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      label: 'Back',
+                    ),
+                  ],
+                ),
               ),
             );
-          });
-        });
+          },
+        );
+      },
+    );
 
     setState(() {});
   }
@@ -373,16 +329,16 @@ class _SaleOpsPageState extends State<SaleOpsPage> {
   }
 
   void onAddItem(Product product) {
-    selectedOrderItem.add(
-        OrderItem(productId: product.id, productCount: 1, product: product));
+    selectedOrderItem.add(OrderItem(
+      productId: product.id,
+      productCount: 1,
+      product: product,
+    ));
+    setState(() {});
   }
 
   void onDeleteItem(int productId) {
-    for (var i = 0; i < (selectedOrderItem.length); i++) {
-      if (selectedOrderItem[i].productId == productId) {
-        selectedOrderItem.removeAt(i);
-        break;
-      }
-    }
+    selectedOrderItem.removeWhere((item) => item.productId == productId);
+    setState(() {});
   }
 }
